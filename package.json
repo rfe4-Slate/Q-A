@@ -1,0 +1,30 @@
+{
+  "name": "Q-A",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "express": "^4.17.1",
+    "node": "^16.6.1",
+    "nodemon": "^2.0.12",
+    "pg": "^8.7.1",
+    "postgres": "^1.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rfe4-Slate/Q-A.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rfe4-Slate/Q-A/issues"
+  },
+  "homepage": "https://github.com/rfe4-Slate/Q-A#readme"
+}
