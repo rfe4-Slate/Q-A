@@ -4,6 +4,7 @@ const express = require('express');
 const app = express();
 const axios = require('axios');
 const pool = require('./Database/db.js');
+const {getQuestions} = require('./Controllers/questions.js');
 
 app.use(express.json());
 
@@ -16,14 +17,30 @@ const routeName = {
 //get
 
 app.get('/', (req, res) => {
-  console.log('req: ', req);
+  console.log('req: ', req.query);
   res.status(200).send("Yay! Get Works!");
 });
 
 
 // //  /qa/questions
 app.get('/qa/questions', (req, res) => {
-  res.status(200).send("Yay! GET /qa/questions works!");
+  let params = req.query;
+
+  if(params.product_id) {
+
+  getQuestions(params, (err, results) => {
+    if(err) {
+      console.log("error getting questions");
+      res.status(400).send(err);
+    } else {
+      console.log("Yay! GET /qa/questions works!");
+      res.status(200).json(results);
+    }
+  });
+} else {
+  res.status(400).send('provide product_id');
+}
+
 });
 //  /qa/questions/:question_id/answers
 
