@@ -4,7 +4,7 @@ const express = require('express');
 const app = express();
 const axios = require('axios');
 const pool = require('./Database/db.js');
-const {getQuestions, getAnswers} = require('./Controllers/questions.js');
+const {getQuestions, getAnswers, addQuestions} = require('./Controllers/questions.js');
 
 app.use(express.json());
 
@@ -64,6 +64,37 @@ app.get('/qa/questions/:question_id/answers', (req, res) => {
 
 });
 
+//post
+// /qa/questions
+app.post('/qa/questions', (req, res) => {
+  let bodyParams = req.body;
+  let ts = new Date(Date.now());
+  console.log('time: ', ts);
+
+  //res.status(201).send('yay post works');
+  if(!bodyParams.product_id){
+    res.status(400).send('provide product_id');
+  } else if (!bodyParams.body) {
+    res.status(400).send('provide body');
+  }  else if (!bodyParams.email) {
+    res.status(400).send('provide email');
+  }  else if (!bodyParams.name) {
+    res.status(400).send('provide name');
+  } else {
+    addQuestions(bodyParams, ts, (err, results) => {
+      if(err) {
+        console.log("error posting questions" + err);
+        res.status(400).send(err);
+
+      } else {
+        console.log("Yay! POST /qa/questions/works!");
+        res.status(201).send("Question Created");
+      }
+    });
+  }
+});
+
+//  /qa/questions/:question_id/answers
 
 //put
 
@@ -73,9 +104,6 @@ app.get('/qa/questions/:question_id/answers', (req, res) => {
 //  /qa/answers/:answer_id/helpful
 //  /qa/answers/:answer_id/report
 
-//post
-// /qa/questions
-//  /qa/questions/:question_id/answers
 
 
 app.listen(port, () => {
