@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "artillery-pro": "^2.3.0-2",
     "axios": "^0.21.1",
     "express": "^4.17.1",
     "node": "^16.6.1",
