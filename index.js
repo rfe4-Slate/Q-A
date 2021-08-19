@@ -4,7 +4,7 @@ const express = require('express');
 const app = express();
 const axios = require('axios');
 const pool = require('./Database/db.js');
-const {getQuestions, getAnswers, addQuestions} = require('./Controllers/questions.js');
+const {getQuestions, getAnswers, addQuestions, addAnswer} = require('./Controllers/questions.js');
 
 app.use(express.json());
 
@@ -68,8 +68,8 @@ app.get('/qa/questions/:question_id/answers', (req, res) => {
 // /qa/questions
 app.post('/qa/questions', (req, res) => {
   let bodyParams = req.body;
-  let ts = new Date(Date.now());
-  console.log('time: ', ts);
+  // let ts = new Date(Date.now());
+  // console.log('time: ', ts);
 
   //res.status(201).send('yay post works');
   if(!bodyParams.product_id){
@@ -81,7 +81,7 @@ app.post('/qa/questions', (req, res) => {
   }  else if (!bodyParams.name) {
     res.status(400).send('provide name');
   } else {
-    addQuestions(bodyParams, ts, (err, results) => {
+    addQuestions(bodyParams, (err, results) => {
       if(err) {
         console.log("error posting questions" + err);
         res.status(400).send(err);
@@ -95,6 +95,36 @@ app.post('/qa/questions', (req, res) => {
 });
 
 //  /qa/questions/:question_id/answers
+app.post('/qa/questions/:question_id/answers', (req, res) => {
+  let bodyParams = req.body;
+  let params = req.params;
+  // let ts = new Date(Date.now());
+  // console.log('time: ', ts);
+
+  //res.status(201).send('yay post works');
+  if(!params.question_id){
+    res.status(400).send('provide question_id');
+  } else if (!bodyParams.body) {
+    res.status(400).send('provide body');
+  }  else if (!bodyParams.email) {
+    res.status(400).send('provide email');
+  }  else if (!bodyParams.name) {
+    res.status(400).send('provide name');
+  } else if (!bodyParams.photos) {
+    res.status(400).send('provide photos');
+  } else {
+    addAnswer(bodyParams, params, (err, results) => {
+      if(err) {
+        console.log("error posting questions" + err);
+        res.status(400).send(err);
+
+      } else {
+        console.log("Yay! POST /qa/questions/questionID/answers works!");
+        res.status(201).send("Answer Created");
+      }
+    });
+  }
+});
 
 //put
 

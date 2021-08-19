@@ -106,21 +106,21 @@ const getAnswers = (params, query, callback) => {
   //console.log(questionID, "---", page, "---", count, "---", num);
 };
 
-const addQuestions = (bodyParams, ts, callback) => {
+const addQuestions = (bodyParams, callback) => {
   //
   let productID = bodyParams.product_id;
   let body = bodyParams.body;
   let name = bodyParams.name;
   let email = bodyParams.email;
-  let date = ts;
-  console.log(date);
+  // let date = ts;
+  // console.log(date);
   let values = [productID, body, name, email]
 
   //console.log('params in getquestions: ', params);
   if (bodyParams) {
     let queryString = `
-    INSERT INTO questions (product_id, body, asker_name, asker_email)
-    VALUES ($1, $2, $3, $4)`;
+    INSERT INTO questions (id, product_id, body, asker_name, asker_email, reported, helpful)
+    VALUES ((setval('questions_id_seq', (SELECT MAX(id) FROM questions)+1)), $1, $2, $3, $4, 0, 0)`;
 
     return new Promise((resolve, reject) => {
       pool.query(queryString, values, (err, results) => {
@@ -146,10 +146,57 @@ const addQuestions = (bodyParams, ts, callback) => {
   }
 };
 
+const addAnswer = (bodyParams, params, callback) => {
+  //
+  let questionID = params.question_id;
+  let body = bodyParams.body;
+  let name = bodyParams.name;
+  let email = bodyParams.email;
+  let photos = bodyParams.photos;
+  // let date = ts;
+  // console.log(date);
+  let values = [questionID, body, name, email, photos]
+
+  //console.log('params in getquestions: ', params);
+  if (params && bodyParams) {
+    let queryString = `
+    WITH newAnswer AS (
+      INSERT INTO answers
+      (id, question_id, body, answerer_name, answerer_email, reported, helpful)
+      VALUES
+      ((setval('answers_id_seq', (SELECT MAX(id) FROM answers)+1)), $1, $2, $3, $4, 0, 0) RETURNING id)
+        INSERT INTO answers_photos (id, answer_id, url)
+        SELECT (setval('answers_photos_id_seq', (SELECT MAX(id) FROM answers_photos)+1)), id, UNNEST(($5)::text[]) FROM newAnswer`;
+
+    return new Promise((resolve, reject) => {
+      pool.query(queryString, values, (err, results) => {
+        if (err) {
+          console.log('error with post answers query');
+          reject(err);
+        } else {
+          //console.log(results);
+          resolve(results);
+        }
+      });
+    }).then((result) => {
+      callback(null, result);
+    }).catch((err) => {
+      callback(err);
+    })
+    // callback(null, "yeet");
+    //callback(null, results.rows);
+
+  } else {
+    callback("err");
+  }
+};
+
+
 module.exports = {
   getQuestions: getQuestions,
   getAnswers: getAnswers,
-  addQuestions: addQuestions
+  addQuestions: addQuestions,
+  addAnswer: addAnswer
 }
 
 
