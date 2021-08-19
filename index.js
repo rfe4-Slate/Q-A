@@ -4,7 +4,7 @@ const express = require('express');
 const app = express();
 const axios = require('axios');
 const pool = require('./Database/db.js');
-const {getQuestions, getAnswers, addQuestions, addAnswer} = require('./Controllers/questions.js');
+const {getQuestions, getAnswers, addQuestions, addAnswer, markQuestionHelpful, reportQuestion, markAnswerHelpful, reportAnswer} = require('./Controllers/questions.js');
 
 app.use(express.json());
 
@@ -126,13 +126,91 @@ app.post('/qa/questions/:question_id/answers', (req, res) => {
   }
 });
 
+
+
 //put
 
 //app.put()
 //  /qa/questions/:question_id/helpful
+app.put('/qa/questions/:question_id/helpful', (req, res) => {
+  let params = req.params;
+
+  if(!params.question_id) {
+    res.status(400).send('provide question_id');
+  } else {
+    markQuestionHelpful(params, (err, results) => {
+      if(err) {
+        console.log("error marking question helpful" + err);
+        res.status(400).send(err);
+
+      } else {
+        console.log("Yay! PUT /qa/questions/questionID/helpful works!");
+        res.status(201).send("Question Marked Helpful");
+      }
+    })
+  }
+
+});
 //  /qa/questions/:question_id/report
+app.put('/qa/questions/:question_id/report', (req, res) => {
+  let params = req.params;
+
+  if(!params.question_id) {
+    res.status(400).send('provide question_id');
+  } else {
+    reportQuestion(params, (err, results) => {
+      if(err) {
+        console.log("error reporting question" + err);
+        res.status(400).send(err);
+
+      } else {
+        console.log("Yay! PUT /qa/questions/questionID/report works!");
+        res.status(201).send("Question Reported");
+      }
+    })
+  }
+
+});
 //  /qa/answers/:answer_id/helpful
+app.put('/qa/answers/:answer_id/helpful', (req, res) => {
+  let params = req.params;
+
+  if(!params.answer_id) {
+    res.status(400).send('provide answer_id');
+  } else {
+    markAnswerHelpful(params, (err, results) => {
+      if(err) {
+        console.log("error marking answer helpful" + err);
+        res.status(400).send(err);
+
+      } else {
+        console.log("Yay! PUT /qa/answers/answerID/helpful works!");
+        res.status(201).send("Answer Marked Helpful");
+      }
+    })
+  }
+
+});
 //  /qa/answers/:answer_id/report
+app.put('/qa/answers/:answer_id/report', (req, res) => {
+  let params = req.params;
+
+  if(!params.answer_id) {
+    res.status(400).send('provide answer_id');
+  } else {
+    reportAnswer(params, (err, results) => {
+      if(err) {
+        console.log("error reporting answer " + err);
+        res.status(400).send(err);
+
+      } else {
+        console.log("Yay! PUT /qa/answer/answerID/report works!");
+        res.status(201).send("Answer Reported");
+      }
+    })
+  }
+
+});
 
 
 

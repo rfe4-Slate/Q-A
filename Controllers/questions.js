@@ -165,8 +165,8 @@ const addAnswer = (bodyParams, params, callback) => {
       (id, question_id, body, answerer_name, answerer_email, reported, helpful)
       VALUES
       ((setval('answers_id_seq', (SELECT MAX(id) FROM answers)+1)), $1, $2, $3, $4, 0, 0) RETURNING id)
-        INSERT INTO answers_photos (id, answer_id, url)
-        SELECT (setval('answers_photos_id_seq', (SELECT MAX(id) FROM answers_photos)+1)), id, UNNEST(($5)::text[]) FROM newAnswer`;
+        INSERT INTO answers_photos (answer_id, url)
+        SELECT id, UNNEST(($5)::text[]) FROM newAnswer`;
 
     return new Promise((resolve, reject) => {
       pool.query(queryString, values, (err, results) => {
@@ -192,11 +192,141 @@ const addAnswer = (bodyParams, params, callback) => {
 };
 
 
+const markQuestionHelpful = (params, callback) => {
+  let questionID = params.question_id;
+
+  let values = [questionID];
+
+  if (params) {
+    let queryString = `
+    UPDATE questions
+    SET helpful = helpful + 1
+    WHERE id = $1`;
+
+    return new Promise((resolve, reject) => {
+      pool.query(queryString, values, (err, results) => {
+        if (err) {
+          console.log('error with put question helpful query');
+          reject(err);
+        } else {
+          //console.log(results);
+          resolve(results);
+        }
+      });
+    }).then((result) => {
+      callback(null, result);
+    }).catch((err) => {
+      callback(err);
+    })
+
+  } else {
+    callback("err");
+  }
+
+};
+
+const reportQuestion = (params, callback) => {
+  let questionID = params.question_id;
+  let values = [questionID];
+
+  if (params) {
+    let queryString = `
+    UPDATE questions
+    SET reported = reported + 1
+    WHERE id = $1`;
+
+    return new Promise((resolve, reject) => {
+      pool.query(queryString, values, (err, results) => {
+        if (err) {
+          console.log('error with put question reported query');
+          reject(err);
+        } else {
+          //console.log(results);
+          resolve(results);
+        }
+      });
+    }).then((result) => {
+      callback(null, result);
+    }).catch((err) => {
+      callback(err);
+    })
+
+  } else {
+    callback("err");
+  }
+
+};
+
+const markAnswerHelpful = (params, callback) => {
+  let answerID = params.answer_id;
+  let values = [answerID];
+
+  if (params) {
+    let queryString = `UPDATE answers
+    SET helpful = helpful + 1
+    WHERE id = $1`;
+
+    return new Promise((resolve, reject) => {
+      pool.query(queryString, values, (err, results) => {
+        if (err) {
+          console.log('error with put answer helpful query');
+          reject(err);
+        } else {
+          //console.log(results);
+          resolve(results);
+        }
+      });
+    }).then((result) => {
+      callback(null, result);
+    }).catch((err) => {
+      callback(err);
+    })
+
+  } else {
+    callback("err");
+  }
+
+};
+
+const reportAnswer = (params, callback) => {
+  let answerID = params.answer_id;
+  let values = [answerID];
+
+  if (params) {
+    let queryString = `UPDATE answers
+    SET reported = reported + 1
+    WHERE id = $1`;
+
+    return new Promise((resolve, reject) => {
+      pool.query(queryString, values, (err, results) => {
+        if (err) {
+          console.log('error with put answer reported query');
+          reject(err);
+        } else {
+          //console.log(results);
+          resolve(results);
+        }
+      });
+    }).then((result) => {
+      callback(null, result);
+    }).catch((err) => {
+      callback(err);
+    })
+
+  } else {
+    callback("err");
+  }
+
+};
 module.exports = {
   getQuestions: getQuestions,
   getAnswers: getAnswers,
   addQuestions: addQuestions,
-  addAnswer: addAnswer
+  addAnswer: addAnswer,
+  markQuestionHelpful: markQuestionHelpful,
+  reportQuestion: reportQuestion,
+  markAnswerHelpful: markAnswerHelpful,
+  reportAnswer: reportAnswer
 }
 
 
