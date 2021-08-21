@@ -46,3 +46,8 @@ WITH (format csv, header);
 
 ALTER TABLE questions ALTER COLUMN date_written SET DATA TYPE timestamp without time zone USING to_timestamp(date_written/1000), ALTER COLUMN date_written SET DEFAULT current_timestamp;
 ALTER TABLE answers ALTER COLUMN date_written SET DATA TYPE timestamp without time zone USING to_timestamp(date_written/1000), ALTER COLUMN date_written SET DEFAULT current_timestamp;
+
+
+CREATE INDEX questions_products_seq ON questions(product_id);
+CREATE INDEX answers_question_seq ON answers(question_id);
+CREATE INDEX photos_answers_seq ON answers_photos(answer_id);
