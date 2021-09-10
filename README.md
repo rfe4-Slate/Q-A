@@ -1,5 +1,24 @@
 
 # SLATE API: Questions and Answers API
+
+
+
+## Installation
+
+Install Slate API with npm
+
+Clone the repository:
+```bash
+  git clone https://github.com/rfe4-Slate/Q-A.git
+  cd Q-A
+```
+
+Install the dependencies:
+```bash
+  npm install
+  npm start
+```
+
 ### List Questions
 
 `GET /qa/questions`
@@ -250,3 +269,22 @@ Parameters
 Response
 
 `Status: 204 NO CONTENT `
+
+
+
+  
+# Hi, I'm Harshi! 👋
+
+  
+## 🚀 About Me
+I'm a full-stack developer with a background in cognitive science. I enjoy problem-solving and working through challenging situations, whether it involves programming or jumping out of a plane (currently working on my US Parachute Association “A” Licence).
+
+  
+## 🛠 Skills
+**Front End** | JavaScript (ES5 and ES6), TypeScript, React, Angular, HTML5, CSS3, Sass, Redux, Axios, Styled-Components
+
+**Back End** | Node.js, Nest.js, Express, MongoDB, Mongoose, Sequelize, PostgreSQL,  MySQL, R, RESTful API Development
+
+**Testing/Deployment** | Jest, Mocha, Chai, Enzyme, AWS: EC2
+
+**Developer Tools** | Vim, Git, npm, Nx, Webpack, Babel, Agile Methodology, Scrum, TDD
